@@ -16,13 +16,13 @@ function App() {
             };
 
             try {
-              const response = await axios.post('http://localhost:80/login', {
-                user: target.user,
-                password: target.password
+              const response = await axios.post('http://localhost/login', {
+                user: target.user.value,
+                password: target.password.value
               });
               console.log(response.data); // Handle the response data here
             } catch (error) {
-              console.error('Unable to process the /login POST request'); // Handle errors here
+              console.error('Unable to process the /login POST request', error); // Handle errors here
             } 
           }}
           method="post"
