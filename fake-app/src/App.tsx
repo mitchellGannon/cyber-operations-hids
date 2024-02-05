@@ -1,26 +1,53 @@
 import { FormEvent, useState } from "react";
+import axios from 'axios';
 import digitalLogo from "./login.jpeg";
 
 function App() {
-  return ( 
+  return (
     <div className="grid place-items-center">
-      <div className="shadow-lg rounded grid grid-rows-2 overflow-hidden">
-        <img src={digitalLogo} alt="" className="row-span-2 w-[300px]"/>
-        <form onSubmit={(e: React.SyntheticEvent) => {
+      <div className="grid grid-rows-2 overflow-hidden rounded shadow-lg">
+        <img src={digitalLogo} alt="" className="row-span-2 w-[300px]" />
+        <form
+          onSubmit={async (e: React.SyntheticEvent) => {
             e.preventDefault();
-          const target = e.target as typeof e.target & {
-            user: { value: string };
-            password: { value: string };
-          };
-          
+            const target = e.target as typeof e.target & {
+              user: { value: string };
+              password: { value: string };
+            };
 
-        }} method="post" className="grid grid-rows-3 gap-4 p-4 row-span-3">
-          <input type="text" name="user" placeholder="username" required={true} className="rounded border-solid border-2 border-black"/>
-          <input type="password" name="password" placeholder="password" required={true} className="rounded border-solid border-2 border-black"/>
-          <button className="rounded bg-blue-500 text-white" type="submit">Login</button>
+            try {
+              const response = await axios.post('http://localhost:80/login', {
+                user: target.user,
+                password: target.password
+              });
+              console.log(response.data); // Handle the response data here
+            } catch (error) {
+              console.error('Unable to process the /login POST request'); // Handle errors here
+            } 
+          }}
+          method="post"
+          className="row-span-3 grid grid-rows-3 gap-4 p-4"
+        >
+          <input
+            type="text"
+            name="user"
+            placeholder="username"
+            required={true}
+            className="rounded border-2 border-solid border-black"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            required={true}
+            className="rounded border-2 border-solid border-black"
+          />
+          <button className="rounded bg-blue-500 text-white" type="submit">
+            Login
+          </button>
         </form>
       </div>
-    </div> 
+    </div>
   );
 }
 
