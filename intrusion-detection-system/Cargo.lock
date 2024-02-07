@@ -580,6 +580,7 @@ name = "intrusion-detection-system"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "serde",
 ]
 
 [[package]]
