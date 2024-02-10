@@ -1,9 +1,14 @@
 const fs = require("node:fs");
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require('path');
 
 const app = express();
 const expressWs = require("express-ws")(app);
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+app.use(express.static(path.join(__dirname, 'public')))
 
 const loginIntrusionChannel = expressWs.getWss("intrusions");
 const intrusionsList = [];
@@ -42,6 +47,10 @@ app.post("/login", (req, _) => {
         client.send();
     });
   }
+});
+
+app.get('/', (req, res) => {
+    res.render('index');
 });
 
 app.listen(7777, () => {
