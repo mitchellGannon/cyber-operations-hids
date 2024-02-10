@@ -6,6 +6,7 @@ const app = express();
 const expressWs = require("express-ws")(app);
 
 const loginIntrusionChannel = expressWs.getWss("intrusions");
+const intrusionsList = [];
 
 const IntrusionTypes = {
   SqlInjection: "Sql Injection",
@@ -26,24 +27,23 @@ const isSqlInjectionAttempt = (username, password) => {
 };
 
 app.use(bodyParser.json());
-app.get("/test", (req, res) => {
-  res.send("server is running");
-});
 
 app.post("/login", (req, _) => {
   // check the mirrored request for matches to known sql injection strings
   if (isSqlInjectionAttempt(req.body.username, req.body.password)) {
-    loginIntrusionChannel.clients.forEach((client) => {
-      client.send({
+    intrusionsList.push({
         intrusionType: IntrusionTypes.SqlInjection,
         info: `Attempted SQL injection with login parameters = ${
-          (req.body.username, req.body.password)
+        (req.body.username, req.body.password)
         }.`,
-      });
+    })
+
+    loginIntrusionChannel.clients.forEach((client) => {
+        client.send();
     });
   }
 });
 
-app.listen(7000, () => {
-  console.log("ids server running on 7000");
+app.listen(7777, () => {
+  console.log("ids server running on 7777");
 });
