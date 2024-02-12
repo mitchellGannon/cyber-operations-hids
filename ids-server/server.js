@@ -1,16 +1,13 @@
 const fs = require("node:fs");
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require('path');
+const { createServer } = require('node:http');
+const { Server } = require('socket.io');
 
 const app = express();
-const expressWs = require("express-ws")(app);
+const server = createServer(app);
+const io = new Server(server);
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-app.use(express.static(path.join(__dirname, 'public')))
-
-const loginIntrusionChannel = expressWs.getWss("intrusions");
 const intrusionsList = [];
 
 const IntrusionTypes = {
@@ -41,18 +38,8 @@ app.post("/login", (req, _) => {
         info: `Attempted SQL injection with login parameters = ${
         (req.body.username, req.body.password)
         }.`,
-    })
-
-    loginIntrusionChannel.clients.forEach((client) => {
-        client.send();
     });
+
+    io.emit('intrusion-detected', intrusionsList);
   }
-});
-
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-app.listen(7777, () => {
-  console.log("ids server running on 7777");
 });
