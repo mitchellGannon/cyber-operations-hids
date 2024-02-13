@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, { path: "/ids-server/"});
 
 const intrusionsList = [];
 
@@ -41,5 +41,18 @@ app.post("/login", (req, _) => {
     });
 
     io.emit('intrusion-detected', intrusionsList);
+    console.log('getting into this function...')
   }
+});
+
+io.on('connection', (socket) => {
+    console.log('client connected');
+
+    setTimeout(() => {
+        io.emit('intrusion-detected', intrusionsList);
+    }, 5000);
+})
+
+server.listen(7777, () => {
+    console.log('Server listening on 7777');
 });
