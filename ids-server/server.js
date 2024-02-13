@@ -30,7 +30,7 @@ const isSqlInjectionAttempt = (username, password) => {
 
 app.use(bodyParser.json());
 
-app.post("/login", (req, _) => {
+app.post("/login", (req, res) => {
   // check the mirrored request for matches to known sql injection strings
   if (isSqlInjectionAttempt(req.body.username, req.body.password)) {
     intrusionsList.push({
@@ -43,6 +43,8 @@ app.post("/login", (req, _) => {
     io.emit('intrusion-detected', intrusionsList);
     console.log('getting into this function...')
   }
+
+  res.send().status(200);
 });
 
 io.on('connection', (socket) => {
