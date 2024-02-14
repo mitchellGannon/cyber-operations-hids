@@ -16,7 +16,6 @@ function App() {
     });
 
     socket.on("intrusion-detected", (data) => {
-      console.log(data);
       setIntrusionList(data);
     });
     // Cleanup on component unmount

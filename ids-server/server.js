@@ -1,12 +1,12 @@
 const fs = require("node:fs");
 const express = require("express");
 const bodyParser = require("body-parser");
-const { createServer } = require('node:http');
-const { Server } = require('socket.io');
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, { path: "/ids-server/"});
+const io = new Server(server, { path: "/ids-server/" });
 
 const intrusionsList = [];
 
@@ -32,29 +32,26 @@ app.use(bodyParser.json());
 
 app.post("/login", (req, res) => {
   // check the mirrored request for matches to known sql injection strings
-  if (isSqlInjectionAttempt(req.body.username, req.body.password)) {
+  if (isSqlInjectionAttempt(req.body.user, req.body.password)) {
     intrusionsList.push({
-        intrusionType: IntrusionTypes.SqlInjection,
-        info: `Attempted SQL injection with login parameters = ${
-        (req.body.username, req.body.password)
-        }.`,
+      intrusionType: IntrusionTypes.SqlInjection,
+      info: `Attempted SQL injection with login parameters username: ${req.body.username}, password: ${req.body.password}.`,
     });
 
-    io.emit('intrusion-detected', intrusionsList);
-    console.log('getting into this function...')
+    io.emit("intrusion-detected", intrusionsList);
   }
 
   res.send().status(200);
 });
 
-io.on('connection', (socket) => {
-    console.log('client connected');
+io.on("connection", (socket) => {
+  console.log("client connected");
 
-    setTimeout(() => {
-        io.emit('intrusion-detected', intrusionsList);
-    }, 5000);
-})
+  setTimeout(() => {
+    io.emit("intrusion-detected", intrusionsList);
+  }, 5000);
+});
 
 server.listen(7777, () => {
-    console.log('Server listening on 7777');
+  console.log("Server listening on 7777");
 });
