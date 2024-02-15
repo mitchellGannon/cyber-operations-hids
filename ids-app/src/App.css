@@ -1,0 +1,8 @@
+html {
+    height: 100dvh;
+}
+
+body,
+#root, #root>* {
+    height: 100%;
+}

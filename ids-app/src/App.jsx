@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import './App.css';
 
 function App() {
   const [intrusionList, setIntrusionList] = useState([]);
@@ -20,11 +21,11 @@ function App() {
   }, []); // Empty dependency array means this effect runs only once on mount
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-rows-[min-content_auto_min-content]">
       {/* header */}
-      <div className="grid grid-cols-3 content-center h-20 px-4 shadow-md shadow-slate-200 bg-[#F5CF02]">
+      <div className="grid grid-cols-3 content-center h-20 px-4 shadow-md shadow-slate-200 bg-[#F5CF02] items-center">
         <img src="./unsw-logo.png" alt="" style={{ height: '80px' }} />
-        <h1>Intrusion Detection System</h1>
+        <h1 className="place-self-center">Intrusion Detection System</h1>
       </div>
 
       {/* intrusions list */}
@@ -34,10 +35,10 @@ function App() {
         ))}
       </div>
 
-      <footer className="grid grid-cols-3 p-4">
+      <footer className="grid grid-cols-3 p-4 bg-slate-800 text-white items-center h-16">
         <span>Mitchell Gannon</span>
         <span className="place-self-center">z5433412</span>
-        <span className="place-self-end">Cyber Operations</span>
+        <span className="justify-self-end">Cyber Operations</span>
       </footer>
     </div>
   );
