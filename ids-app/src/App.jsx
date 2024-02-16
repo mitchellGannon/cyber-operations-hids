@@ -28,11 +28,15 @@ function App() {
         <h1 className="place-self-center">Intrusion Detection System</h1>
       </div>
 
-      {/* intrusions list */}
-      <div className="rounded border">
-        {intrusionList.map((intrusion, index) => (
-          <p key={index}>{intrusion.info}</p>
-        ))}
+      { /* body */ }
+      <div className="flex flex-col gap-4 p-8">
+        <h2 className="text-lg">Detected Intrusions</h2>
+        {/* intrusions list */}
+        <div className="rounded border">
+          {intrusionList.map((intrusion, index) => (
+            <p key={index}>{intrusion.info}</p>
+          ))}
+        </div>
       </div>
 
       <footer className="grid grid-cols-3 p-4 bg-slate-800 text-white items-center h-16">
