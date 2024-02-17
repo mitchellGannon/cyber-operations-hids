@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
+const { randomUUID } = require('crypto');
 
 const app = express();
 const server = createServer(app);
@@ -35,7 +36,9 @@ app.post("/login", (req, res) => {
   if (isSqlInjectionAttempt(req.body.user, req.body.password)) {
     intrusionsList.push({
       intrusionType: IntrusionTypes.SqlInjection,
-      info: `Attempted SQL injection with login parameters username: ${req.body.username}, password: ${req.body.password}.`,
+      info: `Attempted SQL injection with login parameters username: ${req.body.user}, password: ${req.body.password}.`,
+      date: new Date(),
+      id: randomUUID(),
     });
 
     io.emit("intrusion-detected", intrusionsList);
