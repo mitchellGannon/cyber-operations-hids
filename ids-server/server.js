@@ -68,7 +68,7 @@ function isDOSAttack(req) {
 
     // this is to check the total number of seconds
     if (totalTimeBetweenRequests / 1000 < MINIMUM_SECONDS_BETWEEN_REQUESTS) {
-       requestsArr = [];
+       IPDict[reqIP] = [];
        return true; 
     }
 
