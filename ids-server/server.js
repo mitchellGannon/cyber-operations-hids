@@ -10,6 +10,7 @@ const server = createServer(app);
 const io = new Server(server, { path: "/ids-server/" });
 
 const intrusionsList = [];
+var IPDict = {};
 
 const IntrusionTypes = {
   SqlInjection: "Sql Injection",
@@ -25,9 +26,54 @@ const sqlInjectionStrings = new Set(
     .split("\n")
 );
 
-const isSqlInjectionAttempt = (username, password) => {
+function isSqlInjectionAttempt (username, password) {
   return sqlInjectionStrings.has(username) || sqlInjectionStrings.has(password);
-};
+}
+
+function getRequestIP(req){
+    return req.headers['x-forwarded-for'] || req.socket.remoteAddress; 
+}
+
+function isDOSAttack(req) {
+    const REQUESTS_TO_HOLD_NUMBER = 10;
+    const MINIMUM_SECONDS_BETWEEN_REQUESTS = 20;
+    const reqIP = getRequestIP(req);
+    const timeOfRequest = new Date().getTime();
+
+    var requestsArr = IPDict[reqIP];
+
+    if(requestsArr === undefined){
+        IPDict[reqIP] = [timeOfRequest];
+        return false;
+    }
+
+    requestsArr.push(timeOfRequest);
+
+    if (requestsArr.length < REQUESTS_TO_HOLD_NUMBER) return false;
+
+    var totalTimeBetweenRequests = 0;
+    var previousTime = null;
+
+    requestsArr.forEach(requestTime => {
+        if (previousTime === null){
+            previousTime = requestTime;
+        } else {
+            totalTimeBetweenRequests += (requestTime - previousTime);
+            previousTime = requestTime;
+        }
+    });
+
+    // remove the oldest entry in the array
+    requestsArr.shift();
+
+    // this is to check the total number of seconds
+    if (totalTimeBetweenRequests / 1000 < MINIMUM_SECONDS_BETWEEN_REQUESTS) {
+       requestsArr = [];
+       return true; 
+    }
+
+    return false;
+}
 
 app.use(bodyParser.json());
 
@@ -44,15 +90,23 @@ app.post("/login", (req, res) => {
     io.emit("intrusion-detected", intrusionsList);
   }
 
+  if(isDOSAttack(req)) {
+    intrusionsList.push({
+        intrusionType: IntrusionTypes.DOS,
+        info: `Denial of service attack from IP: ${getRequestIP(req)}`,
+        date: new Date(),
+        id: randomUUID(),
+    });
+
+    io.emit("intrusion-detected", intrusionsList);
+  }
+
   res.send().status(200);
 });
 
 io.on("connection", (socket) => {
-  console.log("client connected");
-
-  setTimeout(() => {
+    console.log("client connected");
     io.emit("intrusion-detected", intrusionsList);
-  }, 5000);
 });
 
 server.listen(7777, () => {
