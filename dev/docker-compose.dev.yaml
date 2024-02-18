@@ -27,3 +27,18 @@ services:
         CMD ["npm", "run", "dev"]
     ports:
       - 3000:3000
+
+  ids-server:
+    container_name: ids-server
+    build: 
+      context: ../ids-server
+      dockerfile_inline: |
+        FROM node:alpine
+        WORKDIR /app
+        COPY . .
+        RUN npm install
+        CMD ["node", "server.js"]
+    ports:
+      - 7777:7777
+    volumes:
+      - ../important:/important

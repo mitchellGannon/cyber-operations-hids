@@ -21,7 +21,6 @@ const IntrusionTypes = {
 // read in the wordlist of sql injection strings
 const sqlInjectionStrings = new Set(
   fs
-    //.readFileSync("./wordlists/wordlist.txt")
     .readFileSync("wordlist.txt")
     .toString("UTF8")
     .split("\n")
@@ -36,7 +35,7 @@ function addIntrusion(intrusionType, info) {
     });
 }
 
-fs.watch("../important/appsettings.json", (eventType, filename) => {
+fs.watch("../important/appsettings.json", (_eventType, filename) => {
   addIntrusion(
     IntrusionTypes.Tampering,
     `${filename} has been tampered with. Ensure this was not malicious.`
