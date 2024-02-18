@@ -19,5 +19,9 @@ To set up the project, ensure you have Docker installed and follow these steps:
 2. Navigate to the dev/ folder and build the Docker containers using the provided `docker-compose.dev.yaml` file:
 
    ```bash
-   docker-compose -f docker-compose.dev.yaml up --build
+   docker-compose -f docker-compose.dev.yaml up -d
+
+3. Open up two browser windows next to each other.
+4. Navigate to http://localhost/ in one window.
+5. Navigate to http://localhost/ids-app/ in the other window.
 
