@@ -26,6 +26,11 @@ const sqlInjectionStrings = new Set(
     .split("\n")
 );
 
+fs.watch("../important/appsettings.json", (eventType, filename) => {
+    console.log(eventType);
+    console.log('file was modified...');
+});
+
 function isSqlInjectionAttempt (username, password) {
   return sqlInjectionStrings.has(username) || sqlInjectionStrings.has(password);
 }
