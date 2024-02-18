@@ -9,7 +9,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, { path: "/ids-server/" });
 
-const intrusionsList = [];
+var intrusionsList = [];
 var IPDict = {};
 
 const IntrusionTypes = {
@@ -116,6 +116,13 @@ app.post("/login", (req, res) => {
   }
 
   res.send().status(200);
+});
+
+app.purge("/clear-intrusions", (req, res) => {
+    IPDict = {};
+    intrusionsList = [];
+    io.emit("intrusions-cleared");
+    res.send().status(200);
 });
 
 io.on("connection", (socket) => {
