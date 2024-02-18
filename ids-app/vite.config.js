@@ -7,5 +7,6 @@ export default defineConfig({
   base: '/ids-app/',
   server: {
     port: 7778,
+    host: true
   }
 })

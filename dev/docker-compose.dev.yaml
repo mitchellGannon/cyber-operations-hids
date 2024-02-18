@@ -42,3 +42,16 @@ services:
       - 7777:7777
     volumes:
       - ../important:/important
+  
+  ids-app:
+    container_name: ids-app
+    build: 
+      context: ../ids-app
+      dockerfile_inline: | 
+        FROM node:alpine
+        WORKDIR /app
+        COPY . .
+        RUN npm install
+        CMD ["npm", "run", "dev"]
+    ports:
+      - 7778:7778
