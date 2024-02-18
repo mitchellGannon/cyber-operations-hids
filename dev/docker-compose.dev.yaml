@@ -14,3 +14,16 @@ services:
         COPY ./nginx.conf /etc/nginx/conf.d
     ports:
       - 80:80
+
+  login-app:
+    container_name: login-app
+    build: 
+      context: ../login-app
+      dockerfile_inline: | 
+        FROM node:alpine
+        WORKDIR /app
+        COPY . .
+        RUN npm install
+        CMD ["npm", "run", "dev"]
+    ports:
+      - 3000:3000
