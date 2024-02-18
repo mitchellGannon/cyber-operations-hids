@@ -14,9 +14,11 @@ IntrusionTypeChip.propTypes = {
 function IntrusionTypeChip({ intrusionType }) {
   const chipColor =
     intrusionType === "Sql Injection"
-      ? "red"
+      ? "#5795cb"
       : intrusionType === "Denial Of Service"
-      ? "purple"
+      ? "#5a8476"
+      : intrusionType === "Tampering"
+      ? "#978162"
       : "grey";
   return <div className="rounded text-white p-2" style={{backgroundColor: chipColor}}>
     <p>{intrusionType}</p>
@@ -32,7 +34,7 @@ function IntrusionList({ intrusionList }) {
             {/* header row */}
             <div className="flex justify-between items-center text-white bg-slate-600 p-2">
               <IntrusionTypeChip intrusionType={intrusion.intrusionType} />
-              <div>{intrusion.date}</div>
+              <div className="px-2">{intrusion.date}</div>
             </div>
 
             {/* description */}
