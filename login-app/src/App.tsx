@@ -21,7 +21,7 @@ function App() {
               });
               console.log(response.data); // Handle the response data here
             } catch (error) {
-              console.error('Unable to process the /login POST request', error); // Handle errors here
+              console.error('Unable to process the /login POST request', error); 
             } 
           }}
           method="post"

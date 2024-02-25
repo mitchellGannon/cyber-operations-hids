@@ -88,7 +88,7 @@ function App() {
       console.error(
         "Unable to process the /clear-intrusions PURGE request",
         error
-      ); // Handle errors here
+      ); 
     }
   }
 

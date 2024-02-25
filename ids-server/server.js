@@ -35,6 +35,7 @@ function addIntrusion(intrusionType, info) {
     });
 }
 
+// watches an important file for tampering
 fs.watch("../important/appsettings.json", (_eventType, filename) => {
   addIntrusion(
     IntrusionTypes.Tampering,
@@ -51,6 +52,9 @@ function getRequestIP(req) {
   return req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 }
 
+// once there are 10 requests from the same endpoint, the total time between
+// requests are totalled to see if they are less than MINIMUM_SECONDS_BETWEEN_REQUESTS 
+// this would indicate suspicious behaviour
 function isDOSAttack(req) {
   const REQUESTS_TO_HOLD_NUMBER = 10;
   const MINIMUM_SECONDS_BETWEEN_REQUESTS = 20;
@@ -94,6 +98,7 @@ function isDOSAttack(req) {
 
 app.use(bodyParser.json());
 
+// this endpoint is mirrored so this is a copy of the request to the actual API
 app.post("/login", (req, res) => {
   // check the mirrored request for matches to known sql injection strings
   if (isSqlInjectionAttempt(req.body.user, req.body.password)) {
@@ -124,6 +129,8 @@ app.purge("/clear-intrusions", (req, res) => {
     res.send().status(200);
 });
 
+// on connection to the socket.io websocket connection, the client receives the
+// intrusion list
 io.on("connection", (socket) => {
   console.log("client connected");
   io.emit("intrusion-detected", intrusionsList);
